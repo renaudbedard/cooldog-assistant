@@ -64,10 +64,11 @@ public class TransparentWindow : MonoBehaviour
 	}
 #endif
 
-	void Start() {
-		#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
-		wndStart ();
-		#endif
+	void Start() 
+	{
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+		WndStart ();
+#endif
 
 		CommandParser cmds = new CommandParser ();
 	}
