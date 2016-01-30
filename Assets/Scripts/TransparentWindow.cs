@@ -45,7 +45,7 @@ public class TransparentWindow : MonoBehaviour
 
 	static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
 
-    void Start()
+    void WndStart()
     {
         var margins = new MARGINS() { cxLeftWidth = -1 };
         var hwnd = FindWindow(null, "CooldogAssistant");
@@ -63,4 +63,13 @@ public class TransparentWindow : MonoBehaviour
 		SetWindowLong(hwnd, GWL_EXSTYLE, enabled ? (WS_EX_LAYERED | WS_EX_TRANSPARENT) : 0);
 	}
 #endif
+
+	void Start() {
+		#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+		wndStart ();
+		#endif
+
+		CommandParser cmds = new CommandParser ();
+	}
+
 }
