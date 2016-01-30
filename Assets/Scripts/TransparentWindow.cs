@@ -15,8 +15,8 @@ public class TransparentWindow : MonoBehaviour
         public int cyBottomHeight;
     }
 
-    [DllImport("user32.dll")]
-    private static extern IntPtr GetActiveWindow();
+	[DllImport("user32.dll")]
+	public static extern IntPtr FindWindow(System.String className, System.String windowName);
 
     [DllImport("user32.dll")]
     private static extern int SetWindowLong(IntPtr hWnd, int nIndex, ulong dwNewLong);
@@ -48,7 +48,7 @@ public class TransparentWindow : MonoBehaviour
     void Start()
     {
         var margins = new MARGINS() { cxLeftWidth = -1 };
-        var hwnd = GetActiveWindow();
+        var hwnd = FindWindow(null, "CooldogAssistant");
 
         SetWindowLong(hwnd, GWL_STYLE, WS_POPUP | WS_VISIBLE);
 
@@ -59,7 +59,7 @@ public class TransparentWindow : MonoBehaviour
 
 	public void SetClickthrough(bool enabled) 
 	{
-		var hwnd = GetActiveWindow();
+		var hwnd = FindWindow(null, "CooldogAssistant");
 		SetWindowLong(hwnd, GWL_EXSTYLE, enabled ? (WS_EX_LAYERED | WS_EX_TRANSPARENT) : 0);
 	}
 #endif
