@@ -42,16 +42,6 @@ public class Draggable : MonoBehaviour
 	bool Dragging = true;
 	const int DragLimit = 150;
 
-	void Start()
-	{
-
-	}
-
-	void Update()
-	{
-
-	}
-
 	void OnMouseDown()
 	{
 		var hwnd = FindWindow(null, "CooldogAssistant");
@@ -83,7 +73,8 @@ public class Draggable : MonoBehaviour
 				Dragging = true;
 
 				SetWindowPos(hwnd, HWND_TOPMOST, p.X, p.Y, 0, 0, SWP_NOSIZE);
-				GetComponent<SpriteRenderer>().flipX = p.X < GetSystemMetrics(SM_CXSCREEN) / 2;
+				foreach (var sr in GetComponentsInChildren<SpriteRenderer>())
+					sr.flipX = p.X < GetSystemMetrics(SM_CXSCREEN) / 2;
 			}
 		}
 	}

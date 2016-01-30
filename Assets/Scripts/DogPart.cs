@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using UnityEngine;
 using System.Collections;
 
@@ -13,9 +14,18 @@ public class DogPart : MonoBehaviour
 
 	public SpriteOption[] Sprites;
 
-	void Start() 
+	SpriteRenderer SpriteRenderer;
+
+	void Start()
 	{
-		
+		SpriteRenderer = GetComponent<SpriteRenderer>();
+	}
+
+	public void SetSprite(string name)
+	{
+		var option = Sprites.FirstOrDefault(x => x.Name == name);
+		var sprite = option.Sprite;
+		SpriteRenderer.sprite = sprite;
 	}
 	
 	void Update() 
