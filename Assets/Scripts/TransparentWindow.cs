@@ -1,10 +1,12 @@
-﻿using System;
+﻿//#define DEVELOP
+
+using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class TransparentWindow : MonoBehaviour
 {
-#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+#if (UNITY_STANDALONE_WIN && !UNITY_EDITOR) || DEVELOP
 	private struct MARGINS
     {
         public int cxLeftWidth;
@@ -49,13 +51,16 @@ public class TransparentWindow : MonoBehaviour
         var hwnd = GetActiveWindow();
 
         SetWindowLong(hwnd, GWL_STYLE, WS_POPUP | WS_VISIBLE);
-	    SetWindowLong(hwnd, GWL_EXSTYLE, WS_EX_LAYERED); // | WS_EX_TRANSPARENT);
-
-		SetLayeredWindowAttributes(hwnd, 0, 255, LWA_ALPHA);
 
         DwmExtendFrameIntoClientArea(hwnd, ref margins);
 
 		SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
     }
+
+	public void SetClickthrough(bool enabled) 
+	{
+		var hwnd = GetActiveWindow();
+		SetWindowLong(hwnd, GWL_EXSTYLE, enabled ? (WS_EX_LAYERED | WS_EX_TRANSPARENT) : 0);
+	}
 #endif
 }
