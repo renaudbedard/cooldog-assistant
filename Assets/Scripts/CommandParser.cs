@@ -25,7 +25,11 @@ public class CommandParser {
 
 
 	private static void SayHello(){
-		Debug.Log("Hey man.");
+		List<DialoguePart> parts = new List<DialoguePart> ();
+		parts.Add (new DialoguePart ("Eeeyyyyyyy", 2f));
+
+		TextTyper typer = GameObject.Find("Cooldog").GetComponent<TextTyper>();
+		typer.Play (parts);
 	}
 
 }
