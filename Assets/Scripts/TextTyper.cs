@@ -47,21 +47,21 @@ public class TextTyper : MonoBehaviour {
 		talkingSpeaker.Play();
 	}
 
-	public void Play(List<DialoguePart> parts)
+	public void Play(List<DialoguePart> parts, float delay = 0f)
 	{
 		var wasBusy = busy;
 		busy = true;
 		foreach (var p in parts)
 			currentParts.Enqueue(p);
 		if (!wasBusy)
-			StartCoroutine(PlayInternal());
+			StartCoroutine(PlayInternal(delay));
 	}
 
-	IEnumerator PlayInternal() {
+	IEnumerator PlayInternal(float delay = 0f) {
+		yield return new WaitForSeconds(delay);
 		while (currentParts.Count > 0)
 		{
 			var part = currentParts.Dequeue();
-
 			targetText = part.Line;
 			speed = part.speed;
 
