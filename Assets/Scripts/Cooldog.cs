@@ -270,7 +270,7 @@ public class Cooldog : MonoBehaviour
 	{
 		if (!hasMouthOpen)
 		{
-			if (CurrentSet.Eyes == null || CurrentSet.Eyes[0].Frame == "Buggy")
+			if (Eyes.CurrentAnimation == null || Eyes.CurrentAnimation[0].Frame == "Buggy")
 			{
 				Blinking = true;
 				Eyes.SetAnimation(BlinkEyes);
@@ -308,13 +308,33 @@ public class Cooldog : MonoBehaviour
 	readonly AnimatedSprite[] TalkFace = new [] { new AnimatedSprite { Frame = "Talk" } };
 	public void OpenMouth()
 	{
-		Face.SetAnimation(TalkFace);
-		hasMouthOpen = true;
+		if (Face.CurrentAnimation == null || Face.CurrentAnimation[0].Frame == "Normal")
+		{
+			Face.SetAnimation(TalkFace);
+			hasMouthOpen = true;
+		}
 	}
 	public void CloseMouth()
 	{
-		Face.SetAnimation(CurrentSet.Face ?? Costumes["Normal"].Face);
-		hasMouthOpen = false;
+		if (hasMouthOpen)
+		{
+			Face.SetAnimation(CurrentSet.Face ?? Costumes["Normal"].Face);
+			hasMouthOpen = false;
+		}
+	}
+
+	readonly AnimatedSprite[] HeartEyes = new[] { new AnimatedSprite { Frame = "Heart" } };
+	public void SetScratching(bool value, bool heartEyes)
+	{
+		if (value)
+			Face.SetAnimation(ReliefFace);
+		else
+			Face.SetAnimation(CurrentSet.Face ?? Costumes["Normal"].Face);
+
+		if (heartEyes)
+			Eyes.SetAnimation(HeartEyes);
+		else
+			Eyes.SetAnimation(CurrentSet.Face ?? Costumes["Normal"].Eyes);
 	}
 
 	void ApplyCostume()

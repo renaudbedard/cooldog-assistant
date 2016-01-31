@@ -33,6 +33,8 @@ public class TextTyper : MonoBehaviour {
 	string targetText = "";
 	public bool busy = false;
 
+	Queue<DialoguePart> currentParts = new Queue<DialoguePart>(); 
+
 	// Use this for initialization
 	void Start () {
 		dialogueBox.enabled = false;
@@ -45,13 +47,21 @@ public class TextTyper : MonoBehaviour {
 		talkingSpeaker.Play();
 	}
 
-	public void Play(List<DialoguePart> parts) {
+	public void Play(List<DialoguePart> parts)
+	{
+		var wasBusy = busy;
 		busy = true;
-		StartCoroutine(PlayInternal(parts));
+		foreach (var p in parts)
+			currentParts.Enqueue(p);
+		if (!wasBusy)
+			StartCoroutine(PlayInternal());
 	}
 
-	IEnumerator PlayInternal(List<DialoguePart> parts) {
-		foreach (DialoguePart part in parts) {
+	IEnumerator PlayInternal() {
+		while (currentParts.Count > 0)
+		{
+			var part = currentParts.Dequeue();
+
 			targetText = part.Line;
 			speed = part.speed;
 

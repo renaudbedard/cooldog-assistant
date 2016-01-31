@@ -15,7 +15,8 @@ public class DogPart : MonoBehaviour
 	public SpriteOption[] Sprites;
 
 	float animationTimer;
-	AnimatedSprite[] currentAnimation;
+	public AnimatedSprite[] CurrentAnimation { get; private set; }
+
 	int currentFrame;
 
 	float rotationStep;
@@ -43,7 +44,7 @@ public class DogPart : MonoBehaviour
 			SpriteRenderer.sprite = option.Sprite;
 		}
 
-		currentAnimation = anim;
+		CurrentAnimation = anim;
 		currentFrame = 0;
 		animationTimer = 0;
 	}
@@ -53,16 +54,16 @@ public class DogPart : MonoBehaviour
 		transform.localRotation = Quaternion.AngleAxis(Mathf.Sin(rotationStep * shakeFactor), Vector3.forward);
 		rotationStep += Time.deltaTime * rotationSpeed * shakeFactor;
 
-		if (currentAnimation != null && currentAnimation.Length > 1)
+		if (CurrentAnimation != null && CurrentAnimation.Length > 1)
 		{
 			animationTimer += Time.deltaTime;
 
-			if (animationTimer > currentAnimation[currentFrame].Time)
+			if (animationTimer > CurrentAnimation[currentFrame].Time)
 			{
-				animationTimer -= currentAnimation[currentFrame].Time;
+				animationTimer -= CurrentAnimation[currentFrame].Time;
 
-				currentFrame = (currentFrame + 1) % currentAnimation.Length;
-				var option = Sprites.FirstOrDefault(x => x.Name == currentAnimation[currentFrame].Frame);
+				currentFrame = (currentFrame + 1) % CurrentAnimation.Length;
+				var option = Sprites.FirstOrDefault(x => x.Name == CurrentAnimation[currentFrame].Frame);
 				SpriteRenderer.sprite = option.Sprite;
 			}
 		}

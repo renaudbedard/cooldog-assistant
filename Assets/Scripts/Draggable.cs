@@ -11,6 +11,14 @@ using UnityEngine.EventSystems;
 public class Draggable : MonoBehaviour
 {
 	public InputField InputField;
+	public Scratch Scratch;
+
+	public const int DragLimit = 100;
+
+	public void Start()
+	{
+		Scratch = GetComponent<Scratch>();
+	}
 
 #if ((UNITY_STANDALONE_WIN && !UNITY_EDITOR) || DEVELOP) && !DISABLE
 
@@ -45,7 +53,6 @@ public class Draggable : MonoBehaviour
 
 	POINT DragStart;
 	bool Dragging = true;
-	const int DragLimit = 100;
 
 	void WndOnMouseDown()
 	{
@@ -65,6 +72,8 @@ public class Draggable : MonoBehaviour
 
 	void OnMouseDrag()
 	{
+		if (Scratch.Scratching) return;
+
 		var hwnd = FindWindow(null, "CooldogAssistant");
 
 		if (hwnd != IntPtr.Zero)

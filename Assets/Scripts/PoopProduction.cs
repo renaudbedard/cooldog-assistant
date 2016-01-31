@@ -14,6 +14,7 @@ public class PoopProduction : MonoBehaviour
 	bool waitingForCleanup;
 
 	Cooldog cooldog;
+	Scratch scratch;
 	AudioSource audioSource;
 	TextTyper textTyper;
 
@@ -32,6 +33,7 @@ public class PoopProduction : MonoBehaviour
 		audioSource = GetComponent<AudioSource>();
 		cooldog = GetComponent<Cooldog>();
 		textTyper = GetComponent<TextTyper>();
+		scratch = GetComponentInChildren<Scratch>();
 	}
 
 	private void CheckPoopCount()
@@ -67,7 +69,7 @@ public class PoopProduction : MonoBehaviour
 	void Update()
 	{
 		poopTimer -= Time.deltaTime;
-		if (poopTimer <= 0 && !Poopin && !cooldog.Blinking)
+		if (poopTimer <= 0 && !Poopin && !cooldog.Blinking && !scratch.Scratching)
 			StartCoroutine(Poop());
 
 		if (waitingForCleanup)
