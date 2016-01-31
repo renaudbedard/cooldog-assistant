@@ -94,6 +94,7 @@ public class Cooldog : MonoBehaviour
 			"Trivia", new SpriteMapping
 			{
 				Arms = new[] { new AnimatedSprite { Frame = "Book" } },
+				Eyes = new[] { new AnimatedSprite { Frame = "Glasses" } },
 			} 
 		},
 		{ 
