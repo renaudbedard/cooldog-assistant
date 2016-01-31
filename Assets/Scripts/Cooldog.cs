@@ -195,6 +195,9 @@ public class Cooldog : MonoBehaviour
 
 	SpriteMapping CurrentSet;
 
+	PoopProduction PoopSack;
+	public bool Blinking { get; private set; }
+
 	void Start()
 	{
 		CurrentSet = Costumes["Normal"];
@@ -207,6 +210,8 @@ public class Cooldog : MonoBehaviour
 		NeckDecoration = GameObject.Find("NeckDecoration").GetComponent<DogPart>();
 		Overlay = GameObject.Find("Overlay").GetComponent<DogPart>();
 		OtherOverlay = GameObject.Find("OtherOverlay").GetComponent<DogPart>();
+
+		PoopSack = GetComponent<PoopProduction>();
 
 		ApplyCostume();
 	}
@@ -264,11 +269,36 @@ public class Cooldog : MonoBehaviour
 		{
 			if (CurrentSet.Eyes == null || CurrentSet.Eyes[0].Frame == "Buggy")
 			{
+				Blinking = true;
 				Eyes.SetAnimation(BlinkEyes);
 				yield return new WaitForSeconds(UnityEngine.Random.Range(0.075f, 0.175f));
 				Eyes.SetAnimation(CurrentSet.Eyes ?? Costumes["Normal"].Eyes);
+				Blinking = false;
 			}
 		}
+	}
+
+	readonly AnimatedSprite[] PoopEyes = new[] { new AnimatedSprite { Frame = "Buggy" } };
+	readonly AnimatedSprite[] ReliefFace = new[] { new AnimatedSprite { Frame = "TongueOut" } };
+	public IEnumerator PoopPhase1()
+	{
+		Eyes.SetAnimation(PoopEyes);
+		Body.SetShakeFactor(4);
+		yield return new WaitForSeconds(0.75f);
+		Body.SetShakeFactor(5);
+		yield return new WaitForSeconds(0.7f);
+		Body.SetShakeFactor(6);
+		yield return new WaitForSeconds(0.65f);
+		Eyes.SetAnimation(CurrentSet.Eyes ?? Costumes["Normal"].Eyes);
+	}
+	public IEnumerator PoopPhase2()
+	{
+		Body.SetShakeFactor(1);
+		Face.SetAnimation(ReliefFace);
+		Eyes.SetAnimation(BlinkEyes);
+		yield return new WaitForSeconds(UnityEngine.Random.Range(1.5f, 2.0f));
+		Face.SetAnimation(CurrentSet.Face ?? Costumes["Normal"].Face);
+		Eyes.SetAnimation(CurrentSet.Eyes ?? Costumes["Normal"].Eyes);
 	}
 
 	bool hasMouthOpen;
@@ -301,15 +331,18 @@ public class Cooldog : MonoBehaviour
 	float toNextBlink;
 	void Update()
 	{
-		toNextBlink -= Time.deltaTime;
-		if (toNextBlink <= 0)
+		if (!PoopSack.Poopin)
 		{
-			StartCoroutine(Blink());
-			toNextBlink = UnityEngine.Random.Range(1, 10);
+			toNextBlink -= Time.deltaTime;
+			if (toNextBlink <= 0)
+			{
+				StartCoroutine(Blink());
+				toNextBlink = UnityEngine.Random.Range(1, 10);
 
-			// double blink
-			if (UnityEngine.Random.value < 0.25)
-				toNextBlink = UnityEngine.Random.Range(0.3f, 0.6f);
+				// double blink
+				if (UnityEngine.Random.value < 0.25)
+					toNextBlink = UnityEngine.Random.Range(0.3f, 0.6f);
+			}
 		}
 	}
 }
