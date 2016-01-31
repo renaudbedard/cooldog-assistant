@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using System.Collections;
 
@@ -12,6 +13,18 @@ public struct AnimatedSprite
 
 public class Cooldog : MonoBehaviour
 {
+	bool flipped;
+	public bool Flipped
+	{
+		set
+		{
+			foreach (var sr in GetComponentsInChildren<SpriteRenderer>())
+				sr.flipX = value;
+			flipped = value;
+		}
+		get { return flipped; }
+	}
+
 	DogPart Body;
 	DogPart Face;
 	DogPart Headdress;
@@ -33,8 +46,6 @@ public class Cooldog : MonoBehaviour
 		public AnimatedSprite[] Overlay;
 		public AnimatedSprite[] OtherOverlay;
 	}
-
-	// TODO: Custom overrides for talk/blink/hearteyes etc
 
 	public readonly Dictionary<string, SpriteMapping> Costumes = new Dictionary<string, SpriteMapping>
 	{
@@ -202,11 +213,60 @@ public class Cooldog : MonoBehaviour
 		ApplyCostume();
 	}
 
-	public void ChangeCostume(string costume) 
+	public IEnumerator ChangeCostume(string costume) 
 	{
-		CurrentSet = Costumes[costume];
+		Debug.Log(costume);
 
+		yield return WalkOutOfFrame();
+
+		CurrentSet = Costumes[costume];
 		ApplyCostume();
+
+		yield return WalkIntoFrame();
+	}
+
+	const float WalkOffset = 17;
+	const float WalkSpeed = 20;
+	const float BobHeight = 0.75f;
+	const float BobSpeed = 3;
+
+	public IEnumerator WalkOutOfFrame()
+	{
+		float sign = Flipped ? -1 : 1;
+
+		float step = 0;
+		while (step < 1)
+		{
+			var easedStep = Easing.EaseIn(Mathf.Clamp01(step), EasingType.Sine);
+			transform.localPosition = new Vector3(easedStep * sign * WalkOffset, Math.Abs(Mathf.Cos(easedStep * BobSpeed * Mathf.PI)) * BobHeight - BobHeight, 0);
+			step += Time.deltaTime * WalkSpeed / WalkOffset;
+			yield return new WaitForEndOfFrame();
+		}
+		transform.localPosition = new Vector3(WalkOffset * sign, 0, 0);
+	}
+	public IEnumerator WalkIntoFrame()
+	{
+		float sign = Flipped ? -1 : 1;
+
+		float step = 0;
+		while (step < 1)
+		{
+			var easedStep = Easing.EaseOut(Mathf.Clamp01(step), EasingType.Sine);
+			transform.localPosition = new Vector3((1 - easedStep) * sign * WalkOffset, Math.Abs(Mathf.Cos(easedStep * BobSpeed * Mathf.PI)) * BobHeight - BobHeight, 0);
+			step += Time.deltaTime * WalkSpeed / WalkOffset;
+			yield return new WaitForEndOfFrame();
+		}
+		transform.localPosition = new Vector3(0, 0, 0);
+	}
+
+	public IEnumerator Blink()
+	{
+		yield return new WaitForEndOfFrame();
+	}
+
+	public IEnumerator Syllable()
+	{
+		yield return new WaitForEndOfFrame();
 	}
 
 	void ApplyCostume()
@@ -225,6 +285,15 @@ public class Cooldog : MonoBehaviour
 	
 	void Update()
 	{
-		
+		//if (Input.GetKeyDown(KeyCode.A))
+		//	StartCoroutine(WalkIntoFrame());
+		//if (Input.GetKeyDown(KeyCode.S))
+		///	StartCoroutine(WalkOutOfFrame());
+		if (Input.GetKeyDown(KeyCode.D))
+			StartCoroutine(Blink());
+		if (Input.GetKeyDown(KeyCode.F))
+			StartCoroutine(Syllable());
+		if (Input.GetKeyDown(KeyCode.G))
+			StartCoroutine(ChangeCostume(Costumes.Keys.OrderBy(x => Guid.NewGuid()).First()));
 	}
 }

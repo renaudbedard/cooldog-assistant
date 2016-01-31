@@ -79,8 +79,8 @@ public class Draggable : MonoBehaviour
 				Dragging = true;
 
 				SetWindowPos(hwnd, HWND_TOPMOST, p.X, p.Y, 0, 0, SWP_NOSIZE);
-				foreach (var sr in GetComponentsInChildren<SpriteRenderer>())
-					sr.flipX = p.X < GetSystemMetrics(SM_CXSCREEN) / 2;
+				bool flipX = p.X < GetSystemMetrics(SM_CXSCREEN) / 2;
+				transform.parent.GetComponent<Cooldog>().Flipped = flipX;
 			}
 		}
 	}
@@ -89,8 +89,8 @@ public class Draggable : MonoBehaviour
 	void OnMouseDown()
 	{	
 		InputField.interactable = true;
-		InputField.ActivateInputField ();
-		InputField.Select ();
+		InputField.ActivateInputField();
+		InputField.Select();
 
 		#if ((UNITY_STANDALONE_WIN && !UNITY_EDITOR) || DEVELOP) && !DISABLE
 		WndOnMouseDown ();
