@@ -264,9 +264,18 @@ public class Cooldog : MonoBehaviour
 		yield return new WaitForEndOfFrame();
 	}
 
-	public IEnumerator Syllable()
+	AnimatedSprite[] lastFace;
+	readonly AnimatedSprite[] TalkFace = new [] { new AnimatedSprite { Frame = "Talk" } };
+	public void OpenMouth()
 	{
-		yield return new WaitForEndOfFrame();
+		lastFace = CurrentSet.Face;
+		Face.SetAnimation(TalkFace);
+	}
+	public void CloseMouth()
+	{
+		if (lastFace == null) return;
+		Face.SetAnimation(lastFace);
+		lastFace = null;
 	}
 
 	void ApplyCostume()
@@ -285,14 +294,8 @@ public class Cooldog : MonoBehaviour
 	
 	void Update()
 	{
-		//if (Input.GetKeyDown(KeyCode.A))
-		//	StartCoroutine(WalkIntoFrame());
-		//if (Input.GetKeyDown(KeyCode.S))
-		///	StartCoroutine(WalkOutOfFrame());
 		if (Input.GetKeyDown(KeyCode.D))
 			StartCoroutine(Blink());
-		if (Input.GetKeyDown(KeyCode.F))
-			StartCoroutine(Syllable());
 		if (Input.GetKeyDown(KeyCode.G))
 			StartCoroutine(ChangeCostume(Costumes.Keys.OrderBy(x => Guid.NewGuid()).First()));
 	}

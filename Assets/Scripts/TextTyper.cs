@@ -24,6 +24,8 @@ public class TextTyper : MonoBehaviour {
 	[SerializeField]
 	AudioClip[] coolBark;
 
+	Cooldog cooldog;
+
 	float speed;
 	AudioSource	talkingSpeaker;
 
@@ -37,6 +39,7 @@ public class TextTyper : MonoBehaviour {
 		hideAlso.active = false;
 		busy = false;
 		talkingSpeaker = GetComponent<AudioSource> ();
+		cooldog = GetComponent<Cooldog>();
 	}
 
 	public void Play(List<DialoguePart> parts) {
@@ -63,10 +66,10 @@ public class TextTyper : MonoBehaviour {
 					//talkingSpeaker.clip = coolBark[Random.Range(0, coolBark.Length)];
 					//talkingSpeaker.Play();
 
-					// Open mouth (Animate)
+					cooldog.CloseMouth();
 				}
 				if (".aeiou?!1".Contains(letter.ToString())) {
-					// Shut mouth (Animate)
+					cooldog.OpenMouth();
 				}
 
 				yield return new WaitForSeconds(speed / (float)targetText.Length);
