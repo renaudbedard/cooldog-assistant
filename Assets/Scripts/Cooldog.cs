@@ -109,7 +109,7 @@ public class Cooldog : MonoBehaviour
 		{ 
 			"Picture", new SpriteMapping
 			{
-				Arms = new[] { new AnimatedSprite { Frame = "Pencil" } },
+				Arms = new[] { new AnimatedSprite { Frame = "Pen" } },
 			} 
 		},
 
