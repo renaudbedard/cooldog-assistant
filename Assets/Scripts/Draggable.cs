@@ -1,13 +1,18 @@
 ﻿//#define DEVELOP
+//#define DISABLE
 
 using System;
 using UnityEngine;
 using System.Collections;
 using System.Runtime.InteropServices;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class Draggable : MonoBehaviour
 {
-#if (UNITY_STANDALONE_WIN && !UNITY_EDITOR) || DEVELOP
+	public InputField InputField;
+
+#if ((UNITY_STANDALONE_WIN && !UNITY_EDITOR) || DEVELOP) && !DISABLE
 
 	[DllImport("user32.dll")]
 	public static extern IntPtr FindWindow(string className, string windowName);
@@ -56,6 +61,9 @@ public class Draggable : MonoBehaviour
 			DragStart = p;
 			Dragging = false;
 		}
+
+		EventSystem.current.SetSelectedGameObject(InputField.gameObject, null);
+		InputField.OnPointerClick(null);
 	}
 	void OnMouseDrag()
 	{
