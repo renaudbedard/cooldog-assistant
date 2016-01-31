@@ -66,12 +66,12 @@ public class TextTyper : MonoBehaviour {
 				dialogueBox.text += letter;
 
 				if (letter == ' ' || letter == '0') {
-					talkingSpeaker.clip = coolBark[Random.Range(0, coolBark.Length)];
-					talkingSpeaker.Play();
-
 					cooldog.CloseMouth();
 				}
 				if (".aeiou?!1".Contains(letter.ToString())) {
+					talkingSpeaker.clip = coolBark[Random.Range(0, coolBark.Length)];
+					talkingSpeaker.Play();
+
 					cooldog.OpenMouth();
 				}
 
