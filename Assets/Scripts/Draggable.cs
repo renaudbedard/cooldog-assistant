@@ -47,7 +47,7 @@ public class Draggable : MonoBehaviour
 	bool Dragging = true;
 	const int DragLimit = 150;
 
-	void OnMouseDown()
+	void WndOnMouseDown()
 	{
 		var hwnd = FindWindow(null, "CooldogAssistant");
 
@@ -61,10 +61,8 @@ public class Draggable : MonoBehaviour
 			DragStart = p;
 			Dragging = false;
 		}
-
-		EventSystem.current.SetSelectedGameObject(InputField.gameObject, null);
-		InputField.OnPointerClick(null);
 	}
+
 	void OnMouseDrag()
 	{
 		var hwnd = FindWindow(null, "CooldogAssistant");
@@ -87,4 +85,15 @@ public class Draggable : MonoBehaviour
 		}
 	}
 #endif
+
+	void OnMouseDown()
+	{	
+		InputField.interactable = true;
+		InputField.ActivateInputField ();
+		InputField.Select ();
+
+		#if ((UNITY_STANDALONE_WIN && !UNITY_EDITOR) || DEVELOP) && !DISABLE
+		WndOnMouseDown ();
+		#endif
+	}
 }

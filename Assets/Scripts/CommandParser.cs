@@ -22,6 +22,8 @@ public class CommandParser : MonoBehaviour {
 			if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) {
 				Parse(inputField.text.ToLower());
 				inputField.text = "";
+				inputField.DeactivateInputField();
+				inputField.interactable = false;
 			}
 		});
 	}
