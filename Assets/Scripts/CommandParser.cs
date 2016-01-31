@@ -163,7 +163,7 @@ public class CommandParser : MonoBehaviour {
 			parts.Add (new DialoguePart (line, 3f));
 		}
 
-		StartCoroutine (cooldog.ChangeCostume ("Normal"));
+		StartCoroutine (cooldog.ChangeCostume ("Trivia"));
 
 		typer.Play (parts);
 	}
