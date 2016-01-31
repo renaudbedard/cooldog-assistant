@@ -60,8 +60,8 @@ public class TextTyper : MonoBehaviour {
 				dialogueBox.text += letter;
 
 				if (letter == ' ' || letter == '0') {
-					talkingSpeaker.clip = coolBark[Random.Range(0, coolBark.Length)];
-					talkingSpeaker.Play();
+					//talkingSpeaker.clip = coolBark[Random.Range(0, coolBark.Length)];
+					//talkingSpeaker.Play();
 
 					// Open mouth (Animate)
 				}

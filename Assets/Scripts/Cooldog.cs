@@ -182,13 +182,7 @@ public class Cooldog : MonoBehaviour
 		},
 	};
 
-	public SpriteMapping CurrentSet {
-		get { return CurrentSet; }
-		set {
-			CurrentSet = value;
-			ApplyCostume();
-		}
-	}
+	SpriteMapping CurrentSet;
 
 	void Start()
 	{
@@ -204,6 +198,13 @@ public class Cooldog : MonoBehaviour
 		NeckDecoration = sprites.FindChild("NeckDecoration").GetComponent<DogPart>();
 		Overlay = sprites.FindChild("Overlay").GetComponent<DogPart>();
 		OtherOverlay = sprites.FindChild("OtherOverlay").GetComponent<DogPart>();
+
+		ApplyCostume();
+	}
+
+	public void ChangeCostume(string costume) 
+	{
+		CurrentSet = Costumes[costume];
 
 		ApplyCostume();
 	}
