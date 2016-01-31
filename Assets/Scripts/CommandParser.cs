@@ -1,51 +1,56 @@
 ﻿using System;
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using System.Text.RegularExpressions;
 
 public class CommandParser : MonoBehaviour {
 
 	public InputField inputField;
 
-	Dictionary<string, Action> COMMANDS;
+	Dictionary<string[], Action> COMMANDS;
+	Cooldog cooldog;
+	TextTyper typer;
 
 	void Start () {
-		COMMANDS = new Dictionary<string, Action> () {
-			{ "hey", SayHello },
-			{ "hello", SayHello },
-			{ "hi", SayHello },
-			{ "sup", SayHello },
-			{ "batman", BecomeBatman },
-			{ "email", OpenEmail },
-			{ "note", TakeNotes },
-			{ "memo", TakeNotes },
-			{ "remember", TakeNotes }
+		COMMANDS = new Dictionary<string[], Action> () {
+			{ new []{ "hey", "hello", "hi", "sup" }, SayHello },
+			{ new []{ "batman" }, BecomeBatman },
+			{ new []{ "email" }, OpenEmail },
+			{ new []{ "note", "memo" }, TakeNotes },
+			{ new []{ "remember", "remind" }, RememberThing }
 		};
 
-		inputField.onEndEdit.AddListener(val => {
-			if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) {
-				Parse(inputField.text.ToLower());
+		inputField.onEndEdit.AddListener (val => {
+			if (Input.GetKeyDown (KeyCode.Return) || Input.GetKeyDown (KeyCode.KeypadEnter)) {
+				Parse (inputField.text.ToLower ());
 				inputField.text = "";
-				inputField.DeactivateInputField();
+				inputField.DeactivateInputField ();
 				inputField.interactable = false;
 			}
 		});
+
+		cooldog = GameObject.Find ("Cooldog").GetComponent<Cooldog>();
+		typer = cooldog.GetComponent<TextTyper>();
 	}
 
 	public void Parse(string cmd) {
-		foreach(KeyValuePair<string,Action> command in COMMANDS) {
-			if (cmd.Contains (command.Key)) {
-				command.Value();
-				break;
+		foreach (KeyValuePair<string[],Action> command in COMMANDS) {
+			foreach (string keyword in command.Key) {
+				if( Regex.IsMatch(cmd, @"\b?"+keyword+@"\b", RegexOptions.IgnoreCase) ) {
+					command.Value ();
+					return;
+				}
 			}
 		}
 	}
 
 	private void SayHello(){
 		List<DialoguePart> parts = new List<DialoguePart> ();
-		parts.Add (new DialoguePart ("Eeeyyyyyyy", 2f));
+		string[] responses = { "sup.", "hey man.", "yo.", "eyy" };
+		parts.Add (new DialoguePart (responses[UnityEngine.Random.Range(0, responses.Length)], 0.8f));
 
-		TextTyper typer = GameObject.Find("Cooldog").GetComponent<TextTyper>();
 		typer.Play (parts);
 	}
 
@@ -53,10 +58,8 @@ public class CommandParser : MonoBehaviour {
 		List<DialoguePart> parts = new List<DialoguePart> ();
 		parts.Add (new DialoguePart ("yes im batdog", 1f));
 
-		Cooldog cooldog = GameObject.Find ("Cooldog").GetComponent<Cooldog>();
 		StartCoroutine (cooldog.ChangeCostume ("Batman"));
 
-		TextTyper typer = GameObject.Find("Cooldog").GetComponent<TextTyper>();
 		typer.Play (parts);
 	}
 
@@ -64,10 +67,19 @@ public class CommandParser : MonoBehaviour {
 		List<DialoguePart> parts = new List<DialoguePart> ();
 		parts.Add (new DialoguePart ("lets just write that down. yeah.", 2f));
 
-		Cooldog cooldog = GameObject.Find ("Cooldog").GetComponent<Cooldog> ();
 		StartCoroutine (cooldog.ChangeCostume ("Picture"));
 
-		TextTyper typer = GameObject.Find ("Cooldog").GetComponent<TextTyper> ();
+		typer.Play (parts);
+
+		System.Diagnostics.Process.Start("notepad.exe");
+	}
+
+	private void RememberThing() {
+		List<DialoguePart> parts = new List<DialoguePart> ();
+		parts.Add (new DialoguePart ("lets just write that down. yeah.", 2f));
+
+		StartCoroutine (cooldog.ChangeCostume ("Picture"));
+
 		typer.Play (parts);
 
 		System.Diagnostics.Process.Start("notepad.exe");
@@ -77,10 +89,8 @@ public class CommandParser : MonoBehaviour {
 		List<DialoguePart> parts = new List<DialoguePart> ();
 		parts.Add (new DialoguePart ("an email? i can help with that", 2f));
 
-		Cooldog cooldog = GameObject.Find ("Cooldog").GetComponent<Cooldog> ();
 		StartCoroutine (cooldog.ChangeCostume ("Normal"));
 
-		TextTyper typer = GameObject.Find ("Cooldog").GetComponent<TextTyper> ();
 		typer.Play (parts);
 
 		Application.OpenURL ("http://www.dogpile.com/search/web?q=cool+email+for+dogs");
