@@ -40,6 +40,9 @@ public class TextTyper : MonoBehaviour {
 		busy = false;
 		talkingSpeaker = GetComponent<AudioSource> ();
 		cooldog = GetComponent<Cooldog>();
+
+		talkingSpeaker.clip = coolBark[Random.Range(0, coolBark.Length)];
+		talkingSpeaker.Play();
 	}
 
 	public void Play(List<DialoguePart> parts) {
@@ -74,7 +77,7 @@ public class TextTyper : MonoBehaviour {
 
 				yield return new WaitForSeconds(speed / (float)targetText.Length);
 			}
-
+			cooldog.CloseMouth();
 			yield return new WaitForSeconds(0.5f);
 		}
 		busy = false;
