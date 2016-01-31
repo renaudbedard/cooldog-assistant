@@ -50,7 +50,7 @@ public class CommandParser : MonoBehaviour {
 		parts.Add (new DialoguePart ("yes im batdog", 2f));
 
 		Cooldog cooldog = GameObject.Find ("Cooldog").GetComponent<Cooldog>();
-		cooldog.ChangeCostume("Batman");
+		StartCoroutine (cooldog.ChangeCostume ("Batman"));
 
 		TextTyper typer = GameObject.Find("Cooldog").GetComponent<TextTyper>();
 		typer.Play (parts);
