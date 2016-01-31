@@ -54,7 +54,7 @@ public class TransparentWindow : MonoBehaviour
 
         DwmExtendFrameIntoClientArea(hwnd, ref margins);
 
-		SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 512, 640, SWP_NOMOVE);
+		SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 512, 512, SWP_NOMOVE);
     }
 
 	public void SetClickthrough(bool enabled) 

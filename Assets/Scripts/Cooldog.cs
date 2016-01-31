@@ -21,6 +21,9 @@ public class Cooldog : MonoBehaviour
 			foreach (var sr in GetComponentsInChildren<SpriteRenderer>())
 				sr.flipX = value;
 			flipped = value;
+
+			var armPos = Arms.transform.localPosition;
+			Arms.transform.localPosition = new Vector3(Mathf.Abs(armPos.x) * (flipped ? 1 : -1), armPos.y, armPos.z);
 		}
 		get { return flipped; }
 	}
