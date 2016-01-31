@@ -14,15 +14,21 @@ public class DogPart : MonoBehaviour
 
 	public SpriteOption[] Sprites;
 
-	float timer;
+	float animationTimer;
 	AnimatedSprite[] currentAnimation;
 	int currentFrame;
+
+	float rotationStep;
+	float rotationSpeed;
 
 	SpriteRenderer SpriteRenderer;
 
 	void Start()
 	{
 		SpriteRenderer = GetComponent<SpriteRenderer>();
+
+		rotationStep = UnityEngine.Random.Range(0, Mathf.PI * 2);
+		rotationSpeed = UnityEngine.Random.Range(1, 5);
 	}
 
 	public void SetAnimation(AnimatedSprite[] anim)
@@ -37,23 +43,26 @@ public class DogPart : MonoBehaviour
 
 		currentAnimation = anim;
 		currentFrame = 0;
-		timer = 0;
+		animationTimer = 0;
 	}
 	
 	void Update()
 	{
-		if (currentAnimation == null || currentAnimation.Length <= 1)
-			return;
+		transform.localRotation = Quaternion.AngleAxis(Mathf.Sin(rotationStep), Vector3.forward);
+		rotationStep += Time.deltaTime * rotationSpeed;
 
-		timer += Time.deltaTime;
-
-		if (timer > currentAnimation[currentFrame].Time)
+		if (currentAnimation != null && currentAnimation.Length > 1)
 		{
-			timer -= currentAnimation[currentFrame].Time;
+			animationTimer += Time.deltaTime;
 
-			currentFrame = (currentFrame + 1) % currentAnimation.Length;
-			var option = Sprites.FirstOrDefault(x => x.Name == currentAnimation[currentFrame].Frame);
-			SpriteRenderer.sprite = option.Sprite;
+			if (animationTimer > currentAnimation[currentFrame].Time)
+			{
+				animationTimer -= currentAnimation[currentFrame].Time;
+
+				currentFrame = (currentFrame + 1) % currentAnimation.Length;
+				var option = Sprites.FirstOrDefault(x => x.Name == currentAnimation[currentFrame].Frame);
+				SpriteRenderer.sprite = option.Sprite;
+			}
 		}
 	}
 }

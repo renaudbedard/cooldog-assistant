@@ -199,16 +199,14 @@ public class Cooldog : MonoBehaviour
 	{
 		CurrentSet = Costumes["Normal"];
 
-		var sprites = transform.FindChild("Sprites");
-
-		Body = sprites.FindChild("Body").GetComponent<DogPart>();
-		Face = sprites.FindChild("Face").GetComponent<DogPart>();
-		Headdress = sprites.FindChild("Headdress").GetComponent<DogPart>();
-		Arms = sprites.FindChild("Arms").GetComponent<DogPart>();
-		Eyes = sprites.FindChild("Eyes").GetComponent<DogPart>();
-		NeckDecoration = sprites.FindChild("NeckDecoration").GetComponent<DogPart>();
-		Overlay = sprites.FindChild("Overlay").GetComponent<DogPart>();
-		OtherOverlay = sprites.FindChild("OtherOverlay").GetComponent<DogPart>();
+		Body = GameObject.Find("Body").GetComponent<DogPart>();
+		Face = GameObject.Find("Face").GetComponent<DogPart>();
+		Headdress = GameObject.Find("Headdress").GetComponent<DogPart>();
+		Arms = GameObject.Find("Arms").GetComponent<DogPart>();
+		Eyes = GameObject.Find("Eyes").GetComponent<DogPart>();
+		NeckDecoration = GameObject.Find("NeckDecoration").GetComponent<DogPart>();
+		Overlay = GameObject.Find("Overlay").GetComponent<DogPart>();
+		OtherOverlay = GameObject.Find("OtherOverlay").GetComponent<DogPart>();
 
 		ApplyCostume();
 	}
