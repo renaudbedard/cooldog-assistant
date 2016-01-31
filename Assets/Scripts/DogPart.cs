@@ -14,6 +14,10 @@ public class DogPart : MonoBehaviour
 
 	public SpriteOption[] Sprites;
 
+	float timer;
+	AnimatedSprite[] currentAnimation;
+	int currentFrame;
+
 	SpriteRenderer SpriteRenderer;
 
 	void Start()
@@ -21,15 +25,35 @@ public class DogPart : MonoBehaviour
 		SpriteRenderer = GetComponent<SpriteRenderer>();
 	}
 
-	public void SetSprite(string name)
+	public void SetAnimation(AnimatedSprite[] anim)
 	{
-		var option = Sprites.FirstOrDefault(x => x.Name == name);
-		var sprite = option.Sprite;
-		SpriteRenderer.sprite = sprite;
+		if (anim == null || anim.Length == 0)
+			SpriteRenderer.sprite = null;
+		else
+		{
+			var option = Sprites.FirstOrDefault(x => x.Name == anim[0].Frame);
+			SpriteRenderer.sprite = option.Sprite;
+		}
+
+		currentAnimation = anim;
+		currentFrame = 0;
+		timer = 0;
 	}
 	
-	void Update() 
+	void Update()
 	{
-	
+		if (currentAnimation == null || currentAnimation.Length <= 1)
+			return;
+
+		timer += Time.deltaTime;
+
+		if (timer > currentAnimation[currentFrame].Time)
+		{
+			timer -= currentAnimation[currentFrame].Time;
+
+			currentFrame = (currentFrame + 1) % currentAnimation.Length;
+			var option = Sprites.FirstOrDefault(x => x.Name == currentAnimation[currentFrame].Frame);
+			SpriteRenderer.sprite = option.Sprite;
+		}
 	}
 }
