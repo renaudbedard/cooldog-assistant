@@ -45,7 +45,7 @@ public class Draggable : MonoBehaviour
 
 	POINT DragStart;
 	bool Dragging = true;
-	const int DragLimit = 150;
+	const int DragLimit = 100;
 
 	void WndOnMouseDown()
 	{
