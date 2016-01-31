@@ -30,7 +30,7 @@ public class CommandParser : MonoBehaviour {
 			{ new []{ "email" }, OpenEmail },
 			{ new []{ "note", "memo" }, TakeNotes },
 			{ new []{ "remember", "remind" }, RememberThing },
-			{ new []{ "trivia", "fact", "wiki" }, TellFact }
+			{ new []{ "trivia", "fact", "facts", "wiki" }, TellFact }
 		};
 
 		inputField.onEndEdit.AddListener (val => {
@@ -160,7 +160,7 @@ public class CommandParser : MonoBehaviour {
 			.Select(g => string.Join(" ", g.ToArray()));
 
 		foreach (var line in lines) {
-			parts.Add (new DialoguePart (line, 3f));
+			parts.Add (new DialoguePart (line, (line.Length/20f)));
 		}
 
 		StartCoroutine (cooldog.ChangeCostume ("Trivia"));
