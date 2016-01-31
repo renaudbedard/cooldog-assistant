@@ -69,8 +69,6 @@ public class TransparentWindow : MonoBehaviour
 #if UNITY_STANDALONE_WIN && !UNITY_EDITOR
 		WndStart ();
 #endif
-
-		CommandParser cmds = new CommandParser ();
 	}
 
 }

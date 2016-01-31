@@ -19,6 +19,9 @@ public class TextTyper : MonoBehaviour {
 	Text dialogueBox;
 
 	[SerializeField]
+	GameObject hideAlso;
+
+	[SerializeField]
 	AudioClip[] coolBark;
 
 	float speed;
@@ -31,6 +34,7 @@ public class TextTyper : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		dialogueBox.enabled = false;
+		hideAlso.active = false;
 		busy = false;
 		talkingSpeaker = GetComponent<AudioSource> ();
 	}
@@ -47,6 +51,7 @@ public class TextTyper : MonoBehaviour {
 
 			dialogueBox.text = "";
 			dialogueBox.enabled = true;
+			hideAlso.active = true;
 
 			foreach (char letter in targetText.ToCharArray()) {
 				if (targetText == "") {
@@ -75,6 +80,7 @@ public class TextTyper : MonoBehaviour {
 
 	public void Hide() {
 		dialogueBox.enabled = false;
+		hideAlso.active = false;
 		dialogueBox.text = "";
 		targetText = "";
 		typing = false;

@@ -36,7 +36,7 @@ public class Cooldog : MonoBehaviour
 
 	// TODO: Custom overrides for talk/blink/hearteyes etc
 
-	readonly Dictionary<string, SpriteMapping> Costumes = new Dictionary<string, SpriteMapping>
+	public readonly Dictionary<string, SpriteMapping> Costumes = new Dictionary<string, SpriteMapping>
 	{
 		// Fallback
 		{ 
@@ -182,7 +182,13 @@ public class Cooldog : MonoBehaviour
 		},
 	};
 
-	SpriteMapping CurrentSet;
+	public SpriteMapping CurrentSet {
+		get { return CurrentSet; }
+		set {
+			CurrentSet = value;
+			ApplyCostume();
+		}
+	}
 
 	void Start()
 	{
