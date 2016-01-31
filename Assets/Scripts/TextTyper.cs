@@ -88,7 +88,7 @@ public class TextTyper : MonoBehaviour {
 				yield return new WaitForSeconds(speed / (float)targetText.Length);
 			}
 			cooldog.CloseMouth();
-			yield return new WaitForSeconds(0.5f);
+			yield return new WaitForSeconds(1.5f);
 		}
 		busy = false;
 		Hide();

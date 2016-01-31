@@ -15,7 +15,7 @@ public class CommandParser : MonoBehaviour {
 
 	void Start () {
 		COMMANDS = new Dictionary<string[], Action> () {
-			{ new []{ "hey", "hello", "hi", "sup" }, SayHello },
+			{ new []{ "hey", "hello", "hi", "sup", "yo" }, SayHello },
 			{ new []{ "batman" }, BecomeBatman },
 			{ new []{ "email" }, OpenEmail },
 			{ new []{ "note", "memo" }, TakeNotes },
@@ -35,14 +35,37 @@ public class CommandParser : MonoBehaviour {
 		typer = cooldog.GetComponent<TextTyper>();
 	}
 
-	public void Parse(string cmd) {
+	public void Parse(string cmd)
+	{
+		bool found = false;
 		foreach (KeyValuePair<string[],Action> command in COMMANDS) {
 			foreach (string keyword in command.Key) {
 				if( Regex.IsMatch(cmd, @"\b?"+keyword+@"\b", RegexOptions.IgnoreCase) ) {
 					command.Value ();
+					found = true;
 					return;
 				}
 			}
+		}
+
+		if (!found)
+		{
+			List<DialoguePart> parts = new List<DialoguePart>();
+			string[] responses =
+			{
+				"ain't that the truth.",
+				"oh yeah, absolutely.", 
+				"i... i don't know about that", 
+				"uh-huh",
+				"i don't think i learned about that in dog school",
+				"this reminds me of a cool fact i heard about",
+				"batman might have something to say about that",
+				"... what was that? sorry i thought i heard a weird noise",
+			};
+			var line = responses[UnityEngine.Random.Range(0, responses.Length)];
+			parts.Add(new DialoguePart(line, line.Length / 25.0f));
+
+			typer.Play(parts);
 		}
 	}
 
