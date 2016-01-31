@@ -259,23 +259,36 @@ public class Cooldog : MonoBehaviour
 		transform.localPosition = new Vector3(0, 0, 0);
 	}
 
+	readonly AnimatedSprite[] BlinkEyes = new[] { new AnimatedSprite { Frame = "Closed" } };
 	public IEnumerator Blink()
 	{
-		yield return new WaitForEndOfFrame();
+		if (!hasMouthOpen)
+		{
+			var lastEyes = CurrentSet.Eyes;
+			if (lastEyes == null || lastEyes[0].Frame == "Buggy")
+			{
+				Eyes.SetAnimation(BlinkEyes);
+				yield return new WaitForSeconds(UnityEngine.Random.Range(0.075f, 0.175f));
+				Eyes.SetAnimation(lastEyes);
+			}
+		}
 	}
 
+	bool hasMouthOpen;
 	AnimatedSprite[] lastFace;
 	readonly AnimatedSprite[] TalkFace = new [] { new AnimatedSprite { Frame = "Talk" } };
 	public void OpenMouth()
 	{
 		lastFace = CurrentSet.Face;
 		Face.SetAnimation(TalkFace);
+		hasMouthOpen = true;
 	}
 	public void CloseMouth()
 	{
 		if (lastFace == null) return;
 		Face.SetAnimation(lastFace);
 		lastFace = null;
+		hasMouthOpen = false;
 	}
 
 	void ApplyCostume()
@@ -291,12 +304,19 @@ public class Cooldog : MonoBehaviour
 		Overlay.SetAnimation(CurrentSet.Overlay ?? normal.Overlay);
 		OtherOverlay.SetAnimation(CurrentSet.OtherOverlay ?? normal.OtherOverlay);
 	}
-	
+
+	float toNextBlink;
 	void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.D))
+		toNextBlink -= Time.deltaTime;
+		if (toNextBlink <= 0)
+		{
 			StartCoroutine(Blink());
-		if (Input.GetKeyDown(KeyCode.G))
-			StartCoroutine(ChangeCostume(Costumes.Keys.OrderBy(x => Guid.NewGuid()).First()));
+			toNextBlink = UnityEngine.Random.Range(1, 10);
+
+			// double blink
+			if (UnityEngine.Random.value < 0.25)
+				toNextBlink = UnityEngine.Random.Range(0.3f, 0.6f);
+		}
 	}
 }
