@@ -264,30 +264,25 @@ public class Cooldog : MonoBehaviour
 	{
 		if (!hasMouthOpen)
 		{
-			var lastEyes = CurrentSet.Eyes;
-			if (lastEyes == null || lastEyes[0].Frame == "Buggy")
+			if (CurrentSet.Eyes == null || CurrentSet.Eyes[0].Frame == "Buggy")
 			{
 				Eyes.SetAnimation(BlinkEyes);
 				yield return new WaitForSeconds(UnityEngine.Random.Range(0.075f, 0.175f));
-				Eyes.SetAnimation(lastEyes);
+				Eyes.SetAnimation(CurrentSet.Eyes ?? Costumes["Normal"].Eyes);
 			}
 		}
 	}
 
 	bool hasMouthOpen;
-	AnimatedSprite[] lastFace;
 	readonly AnimatedSprite[] TalkFace = new [] { new AnimatedSprite { Frame = "Talk" } };
 	public void OpenMouth()
 	{
-		lastFace = CurrentSet.Face;
 		Face.SetAnimation(TalkFace);
 		hasMouthOpen = true;
 	}
 	public void CloseMouth()
 	{
-		if (lastFace == null) return;
-		Face.SetAnimation(lastFace);
-		lastFace = null;
+		Face.SetAnimation(CurrentSet.Face ?? Costumes["Normal"].Face);
 		hasMouthOpen = false;
 	}
 
