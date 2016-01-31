@@ -36,7 +36,7 @@ public class TextTyper : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		dialogueBox.enabled = false;
-		hideAlso.active = false;
+		hideAlso.SetActive(false);
 		busy = false;
 		talkingSpeaker = GetComponent<AudioSource> ();
 		cooldog = GetComponent<Cooldog>();
@@ -54,7 +54,7 @@ public class TextTyper : MonoBehaviour {
 
 			dialogueBox.text = "";
 			dialogueBox.enabled = true;
-			hideAlso.active = true;
+			hideAlso.SetActive(true);
 
 			foreach (char letter in targetText.ToCharArray()) {
 				if (targetText == "") {
@@ -63,8 +63,8 @@ public class TextTyper : MonoBehaviour {
 				dialogueBox.text += letter;
 
 				if (letter == ' ' || letter == '0') {
-					//talkingSpeaker.clip = coolBark[Random.Range(0, coolBark.Length)];
-					//talkingSpeaker.Play();
+					talkingSpeaker.clip = coolBark[Random.Range(0, coolBark.Length)];
+					talkingSpeaker.Play();
 
 					cooldog.CloseMouth();
 				}
@@ -83,7 +83,7 @@ public class TextTyper : MonoBehaviour {
 
 	public void Hide() {
 		dialogueBox.enabled = false;
-		hideAlso.active = false;
+		hideAlso.SetActive(false);
 		dialogueBox.text = "";
 		targetText = "";
 		typing = false;
