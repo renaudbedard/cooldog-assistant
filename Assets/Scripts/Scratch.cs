@@ -28,7 +28,8 @@ public class Scratch : MonoBehaviour
 	void OnMouseUp()
 	{
 		totalDistance = 0;
-		Cooldog.SetScratching(false, false);
+        if (Scratching)
+            Cooldog.SetScratching(false, false);
 		Scratching = false;
 		lovingIt = false;
 	}
@@ -45,7 +46,7 @@ public class Scratch : MonoBehaviour
 		totalDistance += (lastPosition - thisPosition).magnitude;
 		lastPosition = thisPosition;
 
-		if (totalDistance > 300)
+		if (totalDistance > 500)
 		{
 			if (!Scratching)
 			{
@@ -53,7 +54,7 @@ public class Scratch : MonoBehaviour
 				textTyper.Play(new List<DialoguePart> { new DialoguePart("aaah yeah", 0.5f) });
 			}
 
-			if (!lovingIt && totalDistance > 600)
+			if (!lovingIt && totalDistance > 1500)
 			{
 				lovingIt = true;
 				Cooldog.SetScratching(true, true);

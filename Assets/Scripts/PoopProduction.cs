@@ -68,9 +68,12 @@ public class PoopProduction : MonoBehaviour
 	
 	void Update()
 	{
-		poopTimer -= Time.deltaTime;
-		if (poopTimer <= 0 && !Poopin && !cooldog.Blinking && !scratch.Scratching)
-			StartCoroutine(Poop());
+        if (textTyper.SinceIdle > 5)
+        {
+            poopTimer -= Time.deltaTime;
+            if (poopTimer <= 0 && !Poopin && !cooldog.Blinking && !scratch.Scratching)
+                StartCoroutine(Poop());
+        }
 
 		if (waitingForCleanup)
 			CheckForClean();

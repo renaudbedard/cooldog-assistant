@@ -13,7 +13,7 @@ public class Draggable : MonoBehaviour
 	public InputField InputField;
 	public Scratch Scratch;
 
-	public const int DragLimit = 100;
+	public const int DragLimit = 200;
 
 	public void Start()
 	{

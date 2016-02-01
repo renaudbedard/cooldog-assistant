@@ -33,6 +33,8 @@ public class TextTyper : MonoBehaviour {
 	string targetText = "";
 	public bool busy = false;
 
+    public float SinceIdle { get; private set; }
+
 	Queue<DialoguePart> currentParts = new Queue<DialoguePart>(); 
 
 	// Use this for initialization
@@ -93,6 +95,14 @@ public class TextTyper : MonoBehaviour {
 		busy = false;
 		Hide();
 	}
+
+    void Update()
+    {
+        if (busy)
+            SinceIdle = 0;
+        else
+            SinceIdle += Time.deltaTime;
+    }
 
 	public void Hide() {
 		dialogueBox.enabled = false;

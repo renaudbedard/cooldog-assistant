@@ -2,6 +2,8 @@
 using System.Linq;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Text;
 
 public class DogPart : MonoBehaviour 
 {
@@ -15,7 +17,11 @@ public class DogPart : MonoBehaviour
 	public SpriteOption[] Sprites;
 
 	float animationTimer;
-	public AnimatedSprite[] CurrentAnimation { get; private set; }
+	public AnimatedSprite[] CurrentAnimation
+    {
+        get { return AnimationStack.Count == 0 ? null : AnimationStack.Peek(); }
+    }
+    readonly Stack<AnimatedSprite[]> AnimationStack = new Stack<AnimatedSprite[]>();
 
 	int currentFrame;
 
@@ -25,7 +31,7 @@ public class DogPart : MonoBehaviour
 
 	SpriteRenderer SpriteRenderer;
 
-	void Start()
+    void Start()
 	{
 		SpriteRenderer = GetComponent<SpriteRenderer>();
 
@@ -36,18 +42,40 @@ public class DogPart : MonoBehaviour
 
 	public void SetAnimation(AnimatedSprite[] anim)
 	{
-		if (anim == null || anim.Length == 0)
-			SpriteRenderer.sprite = null;
-		else
-		{
-			var option = Sprites.FirstOrDefault(x => x.Name == anim[0].Frame);
-			SpriteRenderer.sprite = option.Sprite;
-		}
-
-		CurrentAnimation = anim;
-		currentFrame = 0;
-		animationTimer = 0;
+        AnimationStack.Clear();
+        PushAnimation(anim);
 	}
+
+    public void PushAnimation(AnimatedSprite[] anim)
+    {
+        if (AnimationStack.Count == 0 || AnimationStack.Peek() != anim)
+        {
+            AnimationStack.Push(anim);
+            UpdateAnimation();
+        }
+    }
+    public void PopAnimation(AnimatedSprite[] anim)
+    {
+        if (AnimationStack.Count > 0 && AnimationStack.Peek() == anim)
+        {
+            AnimationStack.Pop();
+            UpdateAnimation();
+        }
+    }
+
+    void UpdateAnimation()
+    {
+        if (CurrentAnimation == null || CurrentAnimation.Length == 0)
+            SpriteRenderer.sprite = null;
+        else
+        {
+            var option = Sprites.FirstOrDefault(x => x.Name == CurrentAnimation[0].Frame);
+            SpriteRenderer.sprite = option.Sprite;
+        }
+
+        currentFrame = 0;
+        animationTimer = 0;
+    }
 	
 	void Update()
 	{

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public class Facts : MonoBehaviour {
-
+public class Facts
+{
 	Markov.MarkovChain<string> FactChain;
 
 	public Facts() {

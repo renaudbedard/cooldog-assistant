@@ -9,6 +9,11 @@ public struct AnimatedSprite
 {
 	public string Frame;
 	public float Time;
+
+    public override string ToString()
+    {
+        return Frame;
+    }
 }
 
 public class Cooldog : MonoBehaviour
@@ -38,7 +43,7 @@ public class Cooldog : MonoBehaviour
 	DogPart OtherOverlay;
 
 	[Serializable]
-	public struct SpriteMapping
+	public struct Costume
 	{
 		public AnimatedSprite[] Body;
 		public AnimatedSprite[] Face;
@@ -50,11 +55,11 @@ public class Cooldog : MonoBehaviour
 		public AnimatedSprite[] OtherOverlay;
 	}
 
-	public readonly Dictionary<string, SpriteMapping> Costumes = new Dictionary<string, SpriteMapping>
+	public readonly Dictionary<string, Costume> Costumes = new Dictionary<string, Costume>
 	{
 		// Fallback
 		{ 
-			"Normal", new SpriteMapping
+			"Normal", new Costume
 			{
 				Body = new [] { new AnimatedSprite { Frame = "Normal" } },
 				Face = new[] { new AnimatedSprite { Frame = "Normal" } },
@@ -64,54 +69,54 @@ public class Cooldog : MonoBehaviour
 
 		// Keywords
 		{ 
-			"Batman", new SpriteMapping
+			"Batman", new Costume
 			{
 				Body = new [] { new AnimatedSprite { Frame = "Batman" } },
 				Headdress = new[] { new AnimatedSprite { Frame = "Batman" } },
 			} 
 		},
 		{ 
-			"Horoscope", new SpriteMapping
+			"Horoscope", new Costume
 			{
 				Headdress = new[] { new AnimatedSprite { Frame = "GipsyHat" } },
 				Arms = new [] { new AnimatedSprite { Frame = "CrystalBall" }  },
 			} 
 		},
 		{ 
-			"SortingHat", new SpriteMapping
+			"SortingHat", new Costume
 			{
 				Headdress = new[] { new AnimatedSprite { Frame = "WizardHat" } },
 				NeckDecoration = new[] { new AnimatedSprite { Frame = "Scarf" } },
 			} 
 		},
 		{ 
-			"Quiz", new SpriteMapping
+			"Quiz", new Costume
 			{
 				Arms = new[] { new AnimatedSprite { Frame = "Microphone" } },
 			} 
 		},
 		{ 
-			"Trivia", new SpriteMapping
+			"Trivia", new Costume
 			{
 				Arms = new[] { new AnimatedSprite { Frame = "Book" } },
 				Eyes = new[] { new AnimatedSprite { Frame = "Glasses" } },
 			} 
 		},
 		{ 
-			"ELIZA", new SpriteMapping
+			"ELIZA", new Costume
 			{
 				Arms = new[] { new AnimatedSprite { Frame = "Pipe" } },
 				Eyes = new[] { new AnimatedSprite { Frame = "Glasses" } },
 			} 
 		},
 		{ 
-			"Music", new SpriteMapping
+			"Music", new Costume
 			{
 				Headdress = new[] { new AnimatedSprite { Frame = "Parappa" } },
 			} 
 		},
 		{ 
-			"Picture", new SpriteMapping
+			"Picture", new Costume
 			{
 				Arms = new[] { new AnimatedSprite { Frame = "Pen" } },
 			} 
@@ -119,7 +124,7 @@ public class Cooldog : MonoBehaviour
 
 		// Weather
 		{ 
-			"Hot", new SpriteMapping
+			"Hot", new Costume
 			{
 				Face = new[] { new AnimatedSprite { Frame = "TongueOut" } },
 				Eyes = new[] { new AnimatedSprite { Frame = "Sunglasses" } },
@@ -131,14 +136,14 @@ public class Cooldog : MonoBehaviour
 			} 
 		},
 		{ 
-			"Cold", new SpriteMapping
+			"Cold", new Costume
 			{
 				Headdress = new[] { new AnimatedSprite { Frame = "Toque" } },
 				NeckDecoration = new[] { new AnimatedSprite { Frame = "Scarf" } },
 			} 
 		},
 		{ 
-			"Rain", new SpriteMapping
+			"Rain", new Costume
 			{
 				Headdress = new[] { new AnimatedSprite { Frame = "Hoodie" } },
 				//TODO : Rain overlay
@@ -147,13 +152,13 @@ public class Cooldog : MonoBehaviour
 
 		// Time
 		{ 
-			"Morning", new SpriteMapping
+			"Morning", new Costume
 			{
 				Arms = new [] { new AnimatedSprite { Frame = "Coffee" }  },
 			} 
 		},
 		{ 
-			"Night", new SpriteMapping
+			"Night", new Costume
 			{
 				Eyes = new[] { new AnimatedSprite { Frame = "Closed" } },
 				Headdress = new[] { new AnimatedSprite { Frame = "Nightcap" } },
@@ -162,7 +167,7 @@ public class Cooldog : MonoBehaviour
 
 		// State
 		{ 
-			"Dirty", new SpriteMapping
+			"Dirty", new Costume
 			{
 				Overlay = new[] { new AnimatedSprite { Frame = "Dirt" } },
 				OtherOverlay = new[]
@@ -173,13 +178,13 @@ public class Cooldog : MonoBehaviour
 			} 
 		},
 		{ 
-			"Walk", new SpriteMapping
+			"Walk", new Costume
 			{
 				NeckDecoration = new[] { new AnimatedSprite { Frame = "Collar" } },
 			} 
 		},
 		{ 
-			"Eat", new SpriteMapping
+			"Eat", new Costume
 			{
 				Face = new[]
 				{
@@ -189,7 +194,7 @@ public class Cooldog : MonoBehaviour
 			} 
 		},
 		{ 
-			"Barf", new SpriteMapping
+			"Barf", new Costume
 			{
 				Eyes = new[] { new AnimatedSprite { Frame = "Buggy" } },
 				Face = new[] { new AnimatedSprite { Frame = "TongueOut" } },
@@ -197,15 +202,12 @@ public class Cooldog : MonoBehaviour
 		},
 	};
 
-	SpriteMapping CurrentSet;
-
 	PoopProduction PoopSack;
 	public bool Blinking { get; private set; }
+    float toNextBlink;
 
-	void Start()
+    void Start()
 	{
-		CurrentSet = Costumes["Normal"];
-
 		Body = GameObject.Find("Body").GetComponent<DogPart>();
 		Face = GameObject.Find("Face").GetComponent<DogPart>();
 		Headdress = GameObject.Find("Headdress").GetComponent<DogPart>();
@@ -217,20 +219,23 @@ public class Cooldog : MonoBehaviour
 
 		PoopSack = GetComponent<PoopProduction>();
 
-		ApplyCostume();
+        toNextBlink = UnityEngine.Random.Range(1, 10);
+
+        StartCoroutine(ChangeCostume("Normal"));
 	}
 
+    string LastCostume;
 	public IEnumerator ChangeCostume(string costume) 
 	{
-		Debug.Log(costume);
-
-		yield return WalkOutOfFrame();
-
-		CurrentSet = Costumes[costume];
-		ApplyCostume();
-
-		yield return WalkIntoFrame();
-	}
+        if (LastCostume != costume)
+        {
+            if (LastCostume != null)
+                yield return WalkOutOfFrame();
+            ApplyCostume(Costumes[costume]);
+            yield return WalkIntoFrame();
+        }
+        LastCostume = costume;
+    }
 
 	const float WalkOffset = 17;
 	const float WalkSpeed = 20;
@@ -271,12 +276,12 @@ public class Cooldog : MonoBehaviour
 	{
 		if (!hasMouthOpen)
 		{
-			if (Eyes.CurrentAnimation == null || Eyes.CurrentAnimation[0].Frame == "Buggy")
+			if (Eyes.CurrentAnimation == null || Eyes.CurrentAnimation.Length == 0 || Eyes.CurrentAnimation[0].Frame == "Buggy")
 			{
 				Blinking = true;
-				Eyes.SetAnimation(BlinkEyes);
+				Eyes.PushAnimation(BlinkEyes);
 				yield return new WaitForSeconds(UnityEngine.Random.Range(0.075f, 0.175f));
-				Eyes.SetAnimation(CurrentSet.Eyes ?? Costumes["Normal"].Eyes);
+                Eyes.PopAnimation(BlinkEyes);
 				Blinking = false;
 			}
 		}
@@ -286,23 +291,23 @@ public class Cooldog : MonoBehaviour
 	readonly AnimatedSprite[] ReliefFace = new[] { new AnimatedSprite { Frame = "TongueOut" } };
 	public IEnumerator PoopPhase1()
 	{
-		Eyes.SetAnimation(PoopEyes);
+		Eyes.PushAnimation(PoopEyes);
 		Body.SetShakeFactor(4);
 		yield return new WaitForSeconds(0.75f);
 		Body.SetShakeFactor(5);
 		yield return new WaitForSeconds(0.7f);
 		Body.SetShakeFactor(6);
 		yield return new WaitForSeconds(0.65f);
-		Eyes.SetAnimation(CurrentSet.Eyes ?? Costumes["Normal"].Eyes);
+		Eyes.PopAnimation(PoopEyes);
 	}
 	public IEnumerator PoopPhase2()
 	{
 		Body.SetShakeFactor(1);
-		Face.SetAnimation(ReliefFace);
-		Eyes.SetAnimation(BlinkEyes);
+		Face.PushAnimation(ReliefFace);
+		Eyes.PushAnimation(BlinkEyes);
 		yield return new WaitForSeconds(UnityEngine.Random.Range(1.5f, 2.0f));
-		Face.SetAnimation(CurrentSet.Face ?? Costumes["Normal"].Face);
-		Eyes.SetAnimation(CurrentSet.Eyes ?? Costumes["Normal"].Eyes);
+		Face.PopAnimation(ReliefFace);
+		Eyes.PopAnimation(BlinkEyes);
 	}
 
 	bool hasMouthOpen;
@@ -311,7 +316,7 @@ public class Cooldog : MonoBehaviour
 	{
 		if (Face.CurrentAnimation == null || Face.CurrentAnimation[0].Frame == "Normal")
 		{
-			Face.SetAnimation(TalkFace);
+			Face.PushAnimation(TalkFace);
 			hasMouthOpen = true;
 		}
 	}
@@ -319,7 +324,7 @@ public class Cooldog : MonoBehaviour
 	{
 		if (hasMouthOpen)
 		{
-			Face.SetAnimation(CurrentSet.Face ?? Costumes["Normal"].Face);
+			Face.PopAnimation(TalkFace);
 			hasMouthOpen = false;
 		}
 	}
@@ -328,31 +333,30 @@ public class Cooldog : MonoBehaviour
 	public void SetScratching(bool value, bool heartEyes)
 	{
 		if (value)
-			Face.SetAnimation(ReliefFace);
+			Face.PushAnimation(ReliefFace);
 		else
-			Face.SetAnimation(CurrentSet.Face ?? Costumes["Normal"].Face);
+			Face.PopAnimation(ReliefFace);
 
 		if (heartEyes)
-			Eyes.SetAnimation(HeartEyes);
+			Eyes.PushAnimation(HeartEyes);
 		else
-			Eyes.SetAnimation(CurrentSet.Face ?? Costumes["Normal"].Eyes);
+			Eyes.PopAnimation(HeartEyes);
 	}
 
-	void ApplyCostume()
+	void ApplyCostume(Costume costume)
 	{
 		var normal = Costumes["Normal"];
 
-		Body.SetAnimation(CurrentSet.Body ?? normal.Body);
-		Face.SetAnimation(CurrentSet.Face ?? normal.Face);
-		Headdress.SetAnimation(CurrentSet.Headdress ?? normal.Headdress);
-		Arms.SetAnimation(CurrentSet.Arms ?? normal.Arms);
-		Eyes.SetAnimation(CurrentSet.Eyes ?? normal.Eyes);
-		NeckDecoration.SetAnimation(CurrentSet.NeckDecoration ?? normal.NeckDecoration);
-		Overlay.SetAnimation(CurrentSet.Overlay ?? normal.Overlay);
-		OtherOverlay.SetAnimation(CurrentSet.OtherOverlay ?? normal.OtherOverlay);
+		Body.SetAnimation(costume.Body ?? normal.Body);
+		Face.SetAnimation(costume.Face ?? normal.Face);
+		Headdress.SetAnimation(costume.Headdress ?? normal.Headdress);
+		Arms.SetAnimation(costume.Arms ?? normal.Arms);
+		Eyes.SetAnimation(costume.Eyes ?? normal.Eyes);
+		NeckDecoration.SetAnimation(costume.NeckDecoration ?? normal.NeckDecoration);
+		Overlay.SetAnimation(costume.Overlay ?? normal.Overlay);
+		OtherOverlay.SetAnimation(costume.OtherOverlay ?? normal.OtherOverlay);
 	}
 
-	float toNextBlink;
 	void Update()
 	{
 		if (!PoopSack.Poopin)
