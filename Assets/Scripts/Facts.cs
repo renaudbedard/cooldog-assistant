@@ -19,11 +19,16 @@ public class Facts
 	}
 
 	public string RandomFact() {
-		var NewFact = "Did you know that";
+		var NewFact = "did you know that";
+        bool first = true;
 		foreach (string FactWord in FactChain.Chain()) {
-			NewFact += " " + FactWord;
-		}
+            var fw = FactWord;
+            if (first)
+                fw = char.ToLower(FactWord[0]) + FactWord.Substring(1);
+            NewFact += " " + fw;
+            first = false;
+        }
 		Debug.Log(NewFact);
-		return NewFact;
+        return NewFact.Substring(0, NewFact.Length - 2) + "?";
 	}
 }

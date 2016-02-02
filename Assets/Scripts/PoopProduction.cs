@@ -42,12 +42,7 @@ public class PoopProduction : MonoBehaviour
 		var poopCount = directory.GetFiles("Poop*.png").Length;
 		if (poopCount > 2)
 		{
-			textTyper.Play(new List<DialoguePart>
-			{
-				new DialoguePart("gettin' smelly in here", 1.5f),
-				new DialoguePart(string.Format("there's like {0} poops around", poopCount), 1.5f),
-				new DialoguePart("would appreciate some housekeeping", 1.5f),
-			});
+			textTyper.Play(0, "gettin' smelly in here", "would appreciate some housekeeping");
 			waitingForCleanup = true;
 		}
 	}
@@ -58,11 +53,8 @@ public class PoopProduction : MonoBehaviour
 		var poopCount = directory.GetFiles("Poop*.png").Length;
 		if (poopCount == 0)
 		{
-			textTyper.Play(new List<DialoguePart>
-			{
-				new DialoguePart("aw thanks man, all clean and nice here now", 2f),
-			});
-			waitingForCleanup = false;
+            textTyper.Play(0, "aw thanks man, all clean and nice here now");
+            waitingForCleanup = false;
 		}
 	}
 	

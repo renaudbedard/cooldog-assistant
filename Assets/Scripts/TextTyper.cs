@@ -3,17 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-[System.Serializable]
-public class DialoguePart {
-	public string Line;
-	public float speed = 1.5f;
-
-	public DialoguePart(string line, float speed) {
-		this.Line = line;
-		this.speed = speed;
-	}
-}
-
 public class TextTyper : MonoBehaviour {
 	[SerializeField]
 	Text dialogueBox;
@@ -35,7 +24,7 @@ public class TextTyper : MonoBehaviour {
 
     public float SinceIdle { get; private set; }
 
-	Queue<DialoguePart> currentParts = new Queue<DialoguePart>(); 
+	Queue<string> currentParts = new Queue<string>(); 
 
 	// Use this for initialization
 	void Start () {
@@ -49,7 +38,7 @@ public class TextTyper : MonoBehaviour {
 		talkingSpeaker.Play();
 	}
 
-	public void Play(List<DialoguePart> parts, float delay = 0f)
+	public void Play(float delay, params string[] parts)
 	{
 		var wasBusy = busy;
 		busy = true;
@@ -64,8 +53,8 @@ public class TextTyper : MonoBehaviour {
 		while (currentParts.Count > 0)
 		{
 			var part = currentParts.Dequeue();
-			targetText = part.Line;
-			speed = part.speed;
+			targetText = part;
+			speed = targetText.Length / 17.0f;
 
 			dialogueBox.text = "";
 			dialogueBox.enabled = true;
@@ -90,7 +79,7 @@ public class TextTyper : MonoBehaviour {
 				yield return new WaitForSeconds(speed / (float)targetText.Length);
 			}
 			cooldog.CloseMouth();
-			yield return new WaitForSeconds(1.5f);
+			yield return new WaitForSeconds(currentParts.Count > 0 ? 0.5f : 1.5f);
 		}
 		busy = false;
 		Hide();

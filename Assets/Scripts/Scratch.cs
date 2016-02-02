@@ -51,14 +51,14 @@ public class Scratch : MonoBehaviour
 			if (!Scratching)
 			{
 				Cooldog.SetScratching(true, false);
-				textTyper.Play(new List<DialoguePart> { new DialoguePart("aaah yeah", 0.5f) });
+				textTyper.Play(0, "aaah yeah");
 			}
 
 			if (!lovingIt && totalDistance > 1500)
 			{
 				lovingIt = true;
 				Cooldog.SetScratching(true, true);
-				textTyper.Play(new List<DialoguePart> { new DialoguePart("that's the spot", 0.5f) });
+				textTyper.Play(0, "that's the spot");
 			}
 			Scratching = true;
 		}

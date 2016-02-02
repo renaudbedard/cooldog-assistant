@@ -30,8 +30,9 @@ public class CommandParser : MonoBehaviour {
 			{ new []{ "email" }, OpenEmail },
 			{ new []{ "note", "memo" }, TakeNotes },
 			{ new []{ "remember", "remind" }, RememberThing },
-			{ new []{ "trivia", "fact", "facts", "wiki" }, TellFact }
-		};
+			{ new []{ "trivia", "fact", "facts", "wiki" }, TellFact },
+            { new []{ "bye", "cya" }, Quit }
+        };
 
 		inputField.onEndEdit.AddListener (val => {
 			if (Input.GetKeyDown (KeyCode.Return) || Input.GetKeyDown (KeyCode.KeypadEnter)) {
@@ -62,49 +63,42 @@ public class CommandParser : MonoBehaviour {
 
 		if (!found)
 		{
-			List<DialoguePart> parts = new List<DialoguePart>();
 			string[] responses =
 			{
 				"ain't that the truth.",
 				"oh yeah, absolutely.", 
-				"i... i don't know about that", 
-				"uh-huh",
-				"i don't think i learned about that in dog school",
-				"this reminds me of a cool fact i heard about",
-				"batman might have something to say about that",
-				"... what was that? sorry i thought i heard a weird noise",
+				"i... i don't know about that.", 
+				"uh-huh.",
+				"i don't think i learned about that in dog school.",
+				"this reminds me of a cool fact i heard about.",
+				"batman might have something to say about that.",
+				"... what was that? sorry i heard a weird noise.",
 			};
-			var line = responses[UnityEngine.Random.Range(0, responses.Length)];
-			parts.Add(new DialoguePart(line, line.Length / 25.0f));
-
-			typer.Play(parts);
+			typer.Play(0, responses[UnityEngine.Random.Range(0, responses.Length)]);
 		}
 	}
 
 	private void SayHello(){
-		List<DialoguePart> parts = new List<DialoguePart> ();
-		string[] responses = { "sup.", "hey man.", "yo.", "eyy" };
-		parts.Add (new DialoguePart (responses[UnityEngine.Random.Range(0, responses.Length)], 0.8f));
-
-		typer.Play (parts);
+		string[] responses = {
+            "sup.",
+            "hey man.",
+            "yo.",
+            "eyy"
+        };
+		typer.Play(0, responses[UnityEngine.Random.Range(0, responses.Length)]);
 	}
 
 	private void BecomeBatman(){
-		List<DialoguePart> parts = new List<DialoguePart> ();
-		parts.Add (new DialoguePart ("yes im batdog", 1f));
-
-		StartCoroutine (cooldog.ChangeCostume ("Batman"));
-
-		typer.Play (parts, 1f);
+        float delay = cooldog.LastCostume == "Batman" ? 0 : 1.5f;
+        StartCoroutine (cooldog.ChangeCostume ("Batman"));
+		typer.Play (delay, "yes im batdog");
 	}
 
 	private void TakeNotes() {
-		List<DialoguePart> parts = new List<DialoguePart> ();
-		parts.Add (new DialoguePart ("lets just write that down. yeah.", 2f));
+        float delay = cooldog.LastCostume == "Picture" ? 0 : 1.5f;
+        StartCoroutine (cooldog.ChangeCostume ("Picture"));
 
-		StartCoroutine (cooldog.ChangeCostume ("Picture"));
-
-		typer.Play (parts, 0.5f);
+		typer.Play (delay, "lets just write that down. yeah.");
 
 		System.Diagnostics.Process.Start("notepad.exe");
 	}
@@ -116,15 +110,12 @@ public class CommandParser : MonoBehaviour {
 			"sure, i can do that",
 			"i'l get back to you on that one"
 		};
-		List<DialoguePart> parts = new List<DialoguePart> ();
-		parts.Add (new DialoguePart (responses[UnityEngine.Random.Range(0, responses.Length)], 2f));
-
 		RemindAt = Time.realtimeSinceStartup + 40 + (UnityEngine.Random.value * 200);
 
-		StartCoroutine (cooldog.ChangeCostume ("Normal"));
+        float delay = cooldog.LastCostume == "Normal" ? 0 : 1.5f;
+        StartCoroutine (cooldog.ChangeCostume ("Normal"));
 
-		typer.Play (parts, 0.3f);
-
+		typer.Play (delay, responses[UnityEngine.Random.Range(0, responses.Length)]);
 	}
 
 	private void RemindThing() {
@@ -136,21 +127,16 @@ public class CommandParser : MonoBehaviour {
 		};
 		string[] responses2 = { 
 			"sorry",
-			"",
 			"your welcome"
 		};
-		List<DialoguePart> parts = new List<DialoguePart> ();
-		parts.Add (new DialoguePart (responses[UnityEngine.Random.Range(0, responses.Length)], 1.8f));
-		parts.Add (new DialoguePart (responses2[UnityEngine.Random.Range(0, responses2.Length)], 1f));
 
-		StartCoroutine (cooldog.ChangeCostume ("Normal"));
+        float delay = cooldog.LastCostume == "Normal" ? 0 : 1.5f;
+        StartCoroutine (cooldog.ChangeCostume ("Normal"));
 
-		typer.Play (parts, 0.3f);
+		typer.Play(delay, responses[UnityEngine.Random.Range(0, responses.Length)], responses[UnityEngine.Random.Range(0, responses2.Length)]);
 	}
 
 	private void TellFact() {
-		List<DialoguePart> parts = new List<DialoguePart> ();
-
 		string input = Facts.RandomFact();
 		var charCount = 0;
 		var maxLineLength = 50;
@@ -159,24 +145,29 @@ public class CommandParser : MonoBehaviour {
 			.GroupBy(w => (charCount += w.Length + 1) / maxLineLength)
 			.Select(g => string.Join(" ", g.ToArray()));
 
-		foreach (var line in lines) {
-			parts.Add (new DialoguePart (line, (line.Length/20f)));
-		}
-
-		StartCoroutine (cooldog.ChangeCostume ("Trivia"));
-
-		typer.Play (parts);
+        float delay = cooldog.LastCostume == "Trivia" ? 0 : 1.5f;
+        StartCoroutine (cooldog.ChangeCostume ("Trivia"));
+		typer.Play (delay, lines.ToArray());
 	}
 
 	private void OpenEmail() {
-		List<DialoguePart> parts = new List<DialoguePart> ();
-		parts.Add (new DialoguePart ("an email? i can help with that", 2f));
-
 		StartCoroutine (cooldog.ChangeCostume ("Normal"));
 
-		typer.Play (parts);
+		typer.Play (0, "an email? i can help with that");
 
 		Application.OpenURL ("http://www.dogpile.com/search/web?q=cool+email+for+dogs");
 	}
+
+    private void Quit()
+    {
+        typer.Play(0, "k bye. i'll be around.");
+        StartCoroutine(QuitIn2Sec());
+    }
+    IEnumerator QuitIn2Sec()
+    {
+        yield return new WaitForSeconds(2.5f);
+        yield return cooldog.WalkOutOfFrame();
+        Application.Quit();
+    }
 }
 	

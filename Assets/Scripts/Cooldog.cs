@@ -160,7 +160,6 @@ public class Cooldog : MonoBehaviour
 		{ 
 			"Night", new Costume
 			{
-				Eyes = new[] { new AnimatedSprite { Frame = "Closed" } },
 				Headdress = new[] { new AnimatedSprite { Frame = "Nightcap" } },
 			} 
 		},
@@ -206,6 +205,21 @@ public class Cooldog : MonoBehaviour
 	public bool Blinking { get; private set; }
     float toNextBlink;
 
+    DateTime? timeLastChecked;
+    string lastTimeBasedNormal;
+
+    TextTyper textTyper;
+
+    string GetNormalForTime()
+    {
+        var dt = DateTime.Now;
+        if (dt.Hour < 5 || dt.Hour > 22)
+            return "Night";
+        if (dt.Hour < 10)
+            return "Morning";
+        return "Normal";
+    }
+
     void Start()
 	{
 		Body = GameObject.Find("Body").GetComponent<DogPart>();
@@ -218,13 +232,12 @@ public class Cooldog : MonoBehaviour
 		OtherOverlay = GameObject.Find("OtherOverlay").GetComponent<DogPart>();
 
 		PoopSack = GetComponent<PoopProduction>();
+        textTyper = GetComponent<TextTyper>();
 
         toNextBlink = UnityEngine.Random.Range(1, 10);
-
-        StartCoroutine(ChangeCostume("Normal"));
 	}
 
-    string LastCostume;
+    public string LastCostume { get; private set; }
 	public IEnumerator ChangeCostume(string costume) 
 	{
         if (LastCostume != costume)
@@ -314,6 +327,7 @@ public class Cooldog : MonoBehaviour
 	readonly AnimatedSprite[] TalkFace = new [] { new AnimatedSprite { Frame = "Talk" } };
 	public void OpenMouth()
 	{
+        // don't animate talk if mouth is agape
 		if (Face.CurrentAnimation == null || Face.CurrentAnimation[0].Frame == "Normal")
 		{
 			Face.PushAnimation(TalkFace);
@@ -372,5 +386,35 @@ public class Cooldog : MonoBehaviour
 					toNextBlink = UnityEngine.Random.Range(0.3f, 0.6f);
 			}
 		}
-	}
+
+        // update per-time costume
+        if (timeLastChecked == null || DateTime.Now.Hour != timeLastChecked.Value.Hour)
+        {
+            timeLastChecked = DateTime.Now;
+            var timeBasedNormal = GetNormalForTime();
+            if (lastTimeBasedNormal != timeBasedNormal)
+            {
+                StartCoroutine(ChangeCostume(timeBasedNormal));
+                lastTimeBasedNormal = timeBasedNormal;
+
+                string[] lines = null;
+
+                switch (timeBasedNormal)
+                {
+                    case "Normal":
+                        lines = new[] { "alright let's do this thing.", "cooldog is here to help." };
+                        break;
+                    case "Night":
+                        lines = new[] { "gettin pretty late.", "about time to hit the sack.", "sleepytime." };
+                        break;
+                    case "Morning":
+                        lines = new[] { "hey. you should make some coffee.", "not a morning dog myself." };
+                        break;
+                }
+
+                if (lines != null)
+                    textTyper.Play(0.75f, lines[UnityEngine.Random.Range(0, lines.Length)]);
+            }
+        }
+    }
 }
