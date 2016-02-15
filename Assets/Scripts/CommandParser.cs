@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Text.RegularExpressions;
 using System.Linq;
+using System.IO;
 
 public class CommandParser : MonoBehaviour {
 
@@ -25,13 +26,15 @@ public class CommandParser : MonoBehaviour {
 
 	void Start () {
 		COMMANDS = new Dictionary<string[], Action> () {
-			{ new []{ "hey", "hello", "hi", "sup", "yo" }, SayHello },
+			{ new []{ "hey", "hello", "hi", "sup", "yo", "cooldog" }, SayHello },
+            { new []{ "who are you", "your name" }, Introduce },
 			{ new []{ "batman" }, BecomeBatman },
 			{ new []{ "email" }, OpenEmail },
 			{ new []{ "note", "memo" }, TakeNotes },
 			{ new []{ "remember", "remind" }, RememberThing },
 			{ new []{ "trivia", "fact", "facts", "wiki" }, TellFact },
-            { new []{ "bye", "cya" }, Quit }
+			{ new []{ "housekeeping", "poop", "pooping", "clean", "cleaning", "smell", "smelly" }, SuggestCleaning },
+            { new []{ "bye", "cya", "quit", "exit"}, Quit }
         };
 
 		inputField.onEndEdit.AddListener (val => {
@@ -88,6 +91,20 @@ public class CommandParser : MonoBehaviour {
 		typer.Play(0, responses[UnityEngine.Random.Range(0, responses.Length)]);
 	}
 
+    private void Introduce() {
+        string[] responses = { 
+			"im cooldog, your personal computer assistant",
+            "the names cooldog",
+            "just a cooldog doin cool things",
+            "hey i'm cooldog, nice to meet you."
+		};
+
+        float delay = cooldog.LastCostume == "Normal" ? 0 : 1.5f;
+        StartCoroutine(cooldog.ChangeCostume("Normal"));
+
+        typer.Play(delay, responses[UnityEngine.Random.Range(0, responses.Length)]);
+    }
+
 	private void BecomeBatman(){
         float delay = cooldog.LastCostume == "Batman" ? 0 : 1.5f;
         StartCoroutine (cooldog.ChangeCostume ("Batman"));
@@ -136,6 +153,29 @@ public class CommandParser : MonoBehaviour {
 		typer.Play(delay, responses[UnityEngine.Random.Range(0, responses.Length)], responses[UnityEngine.Random.Range(0, responses2.Length)]);
 	}
 
+    private void SuggestCleaning() {
+        string[] responses = { 
+			"a cooldogs gotta poop",
+            "gotta poop somewhere",
+            "when you have tyo go, you have to go",
+            "i can't hold it in forever"
+		};
+
+        string[] responses2 = { 
+			"i hope this is an okay spot.",
+            "this folder is getting kinda full",
+            "stoop and scoop? or... delete?",
+            "this mess ain't cleaning up itself"
+		};
+
+        float delay = cooldog.LastCostume == "Normal" ? 0 : 1.5f;
+        StartCoroutine(cooldog.ChangeCostume("Normal"));
+
+        typer.Play(delay, responses[UnityEngine.Random.Range(0, responses.Length)], responses2[UnityEngine.Random.Range(0, responses2.Length)]);
+
+        System.Diagnostics.Process.Start("explorer.exe", "/select," + new DirectoryInfo(Application.dataPath).FullName);
+    }
+
 	private void TellFact() {
 		string input = Facts.RandomFact();
 		var charCount = 0;
@@ -157,6 +197,7 @@ public class CommandParser : MonoBehaviour {
 
 		Application.OpenURL ("http://www.dogpile.com/search/web?q=cool+email+for+dogs");
 	}
+
 
     private void Quit()
     {
